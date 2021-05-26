@@ -1,7 +1,14 @@
+import { FlatList } from 'react-native'
+
 import styled, { css } from 'styled-components/native'
 import { RFPercentage, RFValue } from 'react-native-responsive-fontsize'
 import { Feather } from '@expo/vector-icons'
-import { getStatusBarHeight } from 'react-native-iphone-x-helper'
+import {
+  getBottomSpace,
+  getStatusBarHeight,
+} from 'react-native-iphone-x-helper'
+
+import { Transaction } from './types'
 
 export const Container = styled.View`
   ${({ theme: { colors } }) => css`
@@ -33,13 +40,6 @@ export const Avatar = styled.Image`
 export const Greetings = styled.View`
   margin-left: 10px;
 `
-export const UserGreeting = styled.Text`
-  ${({ theme: { colors, fonts } }) => css`
-    font-size: ${RFValue(18)}px;
-    color: ${colors.whiteIsh};
-    font-family: ${fonts.regular};
-  `}
-`
 export const UserName = styled.Text`
   ${({ theme: { colors, fonts } }) => css`
     font-size: ${RFValue(18)}px;
@@ -64,6 +64,28 @@ export const HighlightCards = styled.ScrollView.attrs({
 })`
   width: 100%;
   position: absolute;
-
   margin-top: ${RFPercentage(22)}px;
 `
+
+export const Transactions = styled.View`
+  flex: 1;
+  padding: 0 24px;
+  margin-top: ${RFPercentage(4)}px;
+`
+
+export const Title = styled.Text`
+  ${({ theme: { colors, fonts } }) => css`
+    font-size: ${RFValue(18)}px;
+    color: ${colors.whiteIsh};
+    font-family: ${fonts.regular};
+  `}
+`
+
+export const TransactionsList = styled(
+  FlatList as new () => FlatList<Transaction>
+).attrs({
+  showsVerticalScrollIndicator: false,
+  contentContainerStyle: {
+    paddingBottom: getBottomSpace() + 4,
+  },
+})``

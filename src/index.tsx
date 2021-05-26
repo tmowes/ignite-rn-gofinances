@@ -10,7 +10,9 @@ import {
   Poppins_700Bold,
 } from '@expo-google-fonts/poppins'
 
-import { Dashboard } from './pages/Dashboard'
+// import { Dashboard } from './pages/Dashboard'
+import { Register } from './pages/Register'
+// import { CategoryModal } from './pages/CategoryModal'
 import * as themes from './styles/themes'
 
 const AppWrapper = styled.View`
@@ -39,7 +41,8 @@ export const AppSrc = () => {
         translucent
       />
       <AppWrapper>
-        <Dashboard />
+        {/* <Dashboard /> */}
+        <Register />
       </AppWrapper>
     </ThemeProvider>
   )

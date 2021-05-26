@@ -7,9 +7,14 @@ export type Transaction = {
   transactionDate: string
 }
 
-type TransactionType = 'INCOME' | 'EXPENSE'
+export type TransactionType = 'INCOME' | 'EXPENSE'
 
 type Category = {
   name: string
   icon: string
+}
+
+export type FormDTO = {
+  name: string
+  amount: string
 }
