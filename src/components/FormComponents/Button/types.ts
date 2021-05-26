@@ -1,5 +1,6 @@
-import { TouchableOpacityProps } from 'react-native'
+import { RectButtonProps } from 'react-native-gesture-handler'
 
-export type ButtonProps = TouchableOpacityProps & {
+export type ButtonProps = Omit<RectButtonProps, 'onPress'> & {
   label: string
+  onPress: () => void
 }

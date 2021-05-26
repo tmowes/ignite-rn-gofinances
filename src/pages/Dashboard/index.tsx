@@ -15,7 +15,13 @@ export const Dashboard = () => (
             <S.Title>Olá,</S.Title>
             <S.UserName>Julius</S.UserName>
           </S.Greetings>
-          <S.PowerIcon />
+          <C.IconButton
+            style={{
+              marginLeft: 'auto',
+            }}
+            onPress={() => true}
+            icon={<S.PowerIcon />}
+          />
         </S.UserInfo>
       </S.UserContainer>
     </S.Header>

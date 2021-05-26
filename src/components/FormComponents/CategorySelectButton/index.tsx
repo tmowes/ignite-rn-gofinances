@@ -6,9 +6,11 @@ import { CategorySelectButtonProps } from './types'
 export const CategorySelectButton = (props: CategorySelectButtonProps) => {
   const { label = '', ...attrs } = props
   return (
-    <S.Container activeOpacity={0.7} {...attrs}>
-      <S.Title>{label}</S.Title>
-      <S.Icon name="chevron-down" />
+    <S.Container>
+      <S.Button {...attrs}>
+        <S.Title>{label}</S.Title>
+        <S.Icon name="chevron-down" />
+      </S.Button>
     </S.Container>
   )
 }

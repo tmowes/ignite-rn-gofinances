@@ -16,6 +16,8 @@ export const TabRoutes = () => {
       tabBarOptions={{
         activeTintColor: colors.secondary,
         inactiveTintColor: colors.text,
+        activeBackgroundColor: colors.backgroundColor,
+        inactiveBackgroundColor: colors.backgroundColor,
         labelPosition: 'beside-icon',
         style: {
           paddingBottom: Platform.OS === 'ios' ? 20 : 0,

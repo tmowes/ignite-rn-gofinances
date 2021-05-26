@@ -1,8 +1,9 @@
+/* eslint-disable prettier/prettier */
 import styled, { css } from 'styled-components/native'
 import { RFValue } from 'react-native-responsive-fontsize'
 import { Feather } from '@expo/vector-icons'
 import { getStatusBarHeight } from 'react-native-iphone-x-helper'
-import { GestureHandlerRootView } from 'react-native-gesture-handler'
+import { GestureHandlerRootView, RectButton } from 'react-native-gesture-handler'
 
 import { StyledProps } from './types'
 
@@ -29,7 +30,7 @@ export const Title = styled.Text`
     font-family: ${fonts.regular};
   `}
 `
-export const CategoryItem = styled.TouchableOpacity<StyledProps>`
+export const CategoryItem = styled(RectButton) <StyledProps>`
   ${({ theme: { colors }, isActive }) => css`
     width: 100%;
     flex-direction: row;

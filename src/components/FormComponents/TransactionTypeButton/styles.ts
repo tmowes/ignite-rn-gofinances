@@ -1,25 +1,17 @@
 /* eslint-disable prettier/prettier */
-import { TouchableOpacity } from 'react-native'
-
+import { RectButton } from 'react-native-gesture-handler'
 import styled, { css } from 'styled-components/native'
 import { RFValue } from 'react-native-responsive-fontsize'
 import { Feather } from '@expo/vector-icons'
 
 import { ActiveStyledProps, StyledProps } from './types'
 
-export const Container = styled(TouchableOpacity) <ActiveStyledProps>`
-  ${({ theme: { colors, fonts }, type, isActive }) => css`
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    color: ${colors.title};
+export const Container = styled.View<ActiveStyledProps>`
+  ${({ theme: { colors }, type, isActive }) => css`
     border: 2px solid ${colors.title}
     border-radius: 6px;
-    font-size: ${RFValue(16)}px;
-    padding: 16px;
     width: 48%;
     margin-bottom: 8px;
-    font-family: ${fonts.medium};
     ${isActive &&
     type === 'INCOME' &&
     css`
@@ -34,9 +26,17 @@ export const Container = styled(TouchableOpacity) <ActiveStyledProps>`
         border: 2px solid ${colors.errorAlpha};
       `
     }
-
 `}
 `
+export const Button = styled(RectButton)`
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  padding: 16px;
+  width: 100%;
+`
+
 export const Title = styled.Text`
   ${({ theme: { colors, fonts } }) => css`
     font-size: ${RFValue(16)}px;

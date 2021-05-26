@@ -11,9 +11,11 @@ const icon = {
 export const TransactionTypeButton = (props: TransactionTypeButtonProps) => {
   const { label = '', type, isActive, ...attrs } = props
   return (
-    <S.Container activeOpacity={0.7} isActive={isActive} type={type} {...attrs}>
-      <S.Icon name={icon[type]} type={type} />
-      <S.Title>{label}</S.Title>
+    <S.Container isActive={isActive} type={type}>
+      <S.Button {...attrs}>
+        <S.Icon name={icon[type]} type={type} />
+        <S.Title>{label}</S.Title>
+      </S.Button>
     </S.Container>
   )
 }

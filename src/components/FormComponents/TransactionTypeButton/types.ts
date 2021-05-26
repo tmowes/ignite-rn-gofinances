@@ -1,6 +1,6 @@
-import { TouchableOpacityProps } from 'react-native'
+import { RectButtonProps } from 'react-native-gesture-handler'
 
-export type TransactionTypeButtonProps = TouchableOpacityProps & {
+export type TransactionTypeButtonProps = RectButtonProps & {
   label: string
   type: TransactionType
   isActive: boolean

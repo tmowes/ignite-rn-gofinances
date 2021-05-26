@@ -19,7 +19,7 @@ export const Container = styled.View`
 export const Header = styled.View`
   ${({ theme: { colors } }) => css`
     width: 100%;
-    height: ${RFPercentage(42)}px;
+    height: ${RFPercentage(38)}px;
     background-color: ${colors.shape};
   `}
 `
@@ -53,7 +53,6 @@ export const PowerIcon = styled(Feather).attrs({
   ${({ theme: { colors } }) => css`
     color: ${colors.secondary};
     font-size: ${RFValue(24)}px;
-    margin-left: auto;
   `}
 `
 
@@ -64,7 +63,7 @@ export const HighlightCards = styled.ScrollView.attrs({
 })`
   width: 100%;
   position: absolute;
-  margin-top: ${RFPercentage(22)}px;
+  margin-top: ${RFPercentage(18)}px;
 `
 
 export const Transactions = styled.View`
