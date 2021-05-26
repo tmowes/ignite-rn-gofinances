@@ -1,6 +1,7 @@
 import React from 'react'
 import { StatusBar } from 'react-native'
 
+import { NavigationContainer } from '@react-navigation/native'
 import AppLoading from 'expo-app-loading'
 import styled, { css, ThemeProvider } from 'styled-components/native'
 import {
@@ -10,10 +11,8 @@ import {
   Poppins_700Bold,
 } from '@expo-google-fonts/poppins'
 
-// import { Dashboard } from './pages/Dashboard'
-import { Register } from './pages/Register'
-// import { CategoryModal } from './pages/CategoryModal'
 import * as themes from './styles/themes'
+import { TabRoutes } from './routes/tab.routes'
 
 const AppWrapper = styled.View`
   ${({ theme: { colors } }) => css`
@@ -35,15 +34,16 @@ export const AppSrc = () => {
 
   return (
     <ThemeProvider theme={themes.dark}>
-      <StatusBar
-        barStyle="light-content"
-        backgroundColor="transparent"
-        translucent
-      />
-      <AppWrapper>
-        {/* <Dashboard /> */}
-        <Register />
-      </AppWrapper>
+      <NavigationContainer>
+        <StatusBar
+          barStyle="light-content"
+          backgroundColor="transparent"
+          translucent
+        />
+        <AppWrapper>
+          <TabRoutes />
+        </AppWrapper>
+      </NavigationContainer>
     </ThemeProvider>
   )
 }
