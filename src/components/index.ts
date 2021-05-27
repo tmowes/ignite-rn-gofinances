@@ -1,5 +1,6 @@
 export { HighlightCard } from './HighlightCard'
 export { TransactionCard } from './TransactionCard'
+export { HistoryCard } from './HistoryCard'
 
 export { Input } from './FormComponents/Input'
 export { InputForm } from './FormComponents/InputForm'

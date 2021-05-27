@@ -7,8 +7,8 @@ export type Transaction = {
   type: TransactionType
   title: string
   amount: string
-  category: Category
-  transactionDate: string
+  category: string
+  created_at: string
 }
 
 type TransactionType = 'INCOME' | 'EXPENSE'

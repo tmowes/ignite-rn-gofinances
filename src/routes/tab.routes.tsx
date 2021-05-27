@@ -49,7 +49,7 @@ export const TabRoutes = () => {
       />
       <Screen
         name="Resumo"
-        component={P.Dashboard}
+        component={P.Resume}
         options={{
           tabBarIcon: ({ size, color }) => (
             <MaterialIcons

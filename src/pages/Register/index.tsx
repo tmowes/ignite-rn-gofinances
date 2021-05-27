@@ -1,49 +1,64 @@
 import React, { useState } from 'react'
 import { Keyboard, TouchableWithoutFeedback, Modal, Alert } from 'react-native'
 
+import uuid from 'react-native-uuid'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
+import { useNavigation } from '@react-navigation/native'
 
 import * as C from '../../components'
 import { CategoryModal } from '../CategoryModal'
 import * as S from './styles'
 import { FormDTO, TransactionType } from './types'
 import { formSchema } from './formSchema'
+import { saveTransaction } from '../../libs/storage'
+import { TransactionProps } from '../../libs/storage/types'
+import { initialCategory, initialTransactionType } from './initialFormState'
 
 export const Register = () => {
+  const { navigate } = useNavigation()
   const {
     control,
+    reset,
     formState: { errors },
     handleSubmit,
   } = useForm({
     resolver: yupResolver(formSchema),
   })
   const [categoryModalOpen, setCategoryModalOpen] = useState(false)
-  const [category, setCategory] = useState({
-    key: 'category',
-    name: 'Categoria',
-  })
+  const [category, setCategory] = useState(initialCategory)
   const [transactionType, setTransactionType] = useState<TransactionType>(
-    'INCOME'
+    initialTransactionType
   )
 
   const transactionTypeSelection = (selectType: TransactionType) => {
     setTransactionType(selectType)
   }
 
-  // eslint-disable-next-line consistent-return
-  const handleRegister = (form: FormDTO) => {
+  const handleRegister = async (form: FormDTO) => {
     if (category.key === 'category') {
       return Alert.alert('Selecione a categoria!')
     }
 
-    const data = {
-      name: form.name,
+    const data: TransactionProps = {
+      id: String(uuid.v4()),
+      title: form.name,
       amount: form.amount,
-      transactionType,
+      type: transactionType,
       category: category.key,
+      created_at: String(new Date()),
+      updated_at: String(new Date()),
     }
-    console.log(data)
+    try {
+      await saveTransaction({ ...data })
+      setCategory(initialCategory)
+      setTransactionType(initialTransactionType)
+      reset()
+      navigate('Listagem')
+    } catch (error) {
+      console.log(error)
+      return Alert.alert('Não foi possivel cadastrar a transação!')
+    }
   }
 
   return (
