@@ -1,5 +1,5 @@
 /* eslint-disable array-callback-return */
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useMemo, useState } from 'react'
 import {
   ActivityIndicator,
   Keyboard,
@@ -10,23 +10,51 @@ import { VictoryPie } from 'victory-native'
 import { useFocusEffect } from '@react-navigation/native'
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs'
 import { RFValue } from 'react-native-responsive-fontsize'
+import addMonths from 'date-fns/addMonths'
+import format from 'date-fns/format'
+import { ptBR } from 'date-fns/locale'
 
 import * as C from '../../components'
 import * as S from './styles'
 import { loadTransactions } from '../../libs/storage'
-import { categories, formatCurrency } from '../../utils'
+import {
+  categories,
+  compareMonth,
+  compareYear,
+  formatCurrency,
+} from '../../utils'
 import { Category } from './types'
 
 export const Resume = () => {
   const [isLoading, setIsLoading] = useState(true)
+  const [selectedDate, setSelectedDate] = useState(new Date())
   const tabHeight = useBottomTabBarHeight()
 
   const [categoriesList, setCategoriesList] = useState<Category[]>([])
 
+  const selectedDateChange = (action: 'PREV' | 'NEXT') => {
+    if (action === 'NEXT') {
+      setSelectedDate(prev => addMonths(prev, 1))
+    }
+    if (action === 'PREV') {
+      setSelectedDate(prev => addMonths(prev, -1))
+    }
+  }
+
+  const selectedDateFormatted = useMemo(
+    () => format(selectedDate, 'MMMM, yyyy', { locale: ptBR }),
+    [selectedDate]
+  )
+
   const loadAsyncStorage = async () => {
+    0
+
     const storageTransactions = await loadTransactions()
     const expensesList = storageTransactions.filter(
-      transaction => transaction.type === 'EXPENSE'
+      transaction =>
+        transaction.type === 'EXPENSE' &&
+        compareMonth(transaction.created_at, selectedDate) &&
+        compareYear(transaction.created_at, selectedDate)
     )
 
     const expensesTotal = expensesList.reduce(
@@ -62,17 +90,12 @@ export const Resume = () => {
     setIsLoading(false)
   }
 
-  useEffect(() => {
-    loadAsyncStorage()
-  }, [])
-
   useFocusEffect(
     useCallback(() => {
       loadAsyncStorage()
-    }, [])
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [selectedDate])
   )
-
-  console.log(categoriesList)
 
   if (isLoading) {
     return (
@@ -88,17 +111,23 @@ export const Resume = () => {
         <S.Header>
           <S.Title>Resumo por categoria</S.Title>
         </S.Header>
+        <S.MonthSelect>
+          <C.IconButton
+            icon={<S.Icon name="chevron-left" />}
+            onPress={() => selectedDateChange('PREV')}
+          />
+          <S.MonthText>{selectedDateFormatted}</S.MonthText>
+          <C.IconButton
+            icon={<S.Icon name="chevron-right" />}
+            onPress={() => selectedDateChange('NEXT')}
+          />
+        </S.MonthSelect>
         <S.ContentList
           contentContainerStyle={{
             paddingHorizontal: 24,
             paddingBottom: tabHeight,
           }}
         >
-          <S.MonthSelect>
-            <C.IconButton icon={<S.Icon name="chevron-left" />} />
-            <S.MonthText>Maio</S.MonthText>
-            <C.IconButton icon={<S.Icon name="chevron-right" />} />
-          </S.MonthSelect>
           <S.GraphContainer>
             <VictoryPie
               data={categoriesList}
