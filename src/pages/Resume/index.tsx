@@ -1,3 +1,4 @@
+/* eslint-disable array-callback-return */
 import React, { useCallback, useEffect, useState } from 'react'
 import {
   ActivityIndicator,
@@ -7,6 +8,7 @@ import {
 
 import { VictoryPie } from 'victory-native'
 import { useFocusEffect } from '@react-navigation/native'
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs'
 import { RFValue } from 'react-native-responsive-fontsize'
 
 import * as C from '../../components'
@@ -17,6 +19,7 @@ import { Category } from './types'
 
 export const Resume = () => {
   const [isLoading, setIsLoading] = useState(true)
+  const tabHeight = useBottomTabBarHeight()
 
   const [categoriesList, setCategoriesList] = useState<Category[]>([])
 
@@ -85,7 +88,17 @@ export const Resume = () => {
         <S.Header>
           <S.Title>Resumo por categoria</S.Title>
         </S.Header>
-        <S.ContentList>
+        <S.ContentList
+          contentContainerStyle={{
+            paddingHorizontal: 24,
+            paddingBottom: tabHeight,
+          }}
+        >
+          <S.MonthSelect>
+            <C.IconButton icon={<S.Icon name="chevron-left" />} />
+            <S.MonthText>Maio</S.MonthText>
+            <C.IconButton icon={<S.Icon name="chevron-right" />} />
+          </S.MonthSelect>
           <S.GraphContainer>
             <VictoryPie
               data={categoriesList}

@@ -1,6 +1,7 @@
 import styled, { css } from 'styled-components/native'
 import { RFValue } from 'react-native-responsive-fontsize'
 import { getStatusBarHeight } from 'react-native-iphone-x-helper'
+import { Feather } from '@expo/vector-icons'
 
 export const Container = styled.View`
   ${({ theme: { colors } }) => css`
@@ -28,11 +29,33 @@ export const Title = styled.Text`
 
 export const ContentList = styled.ScrollView.attrs({
   showsVerticalScrollIndicator: false,
-  contentContainerStyle: { paddingHorizontal: 24 },
 })`
   flex: 1;
 `
 export const GraphContainer = styled.View`
   width: 100%;
   align-items: center;
+`
+
+export const Icon = styled(Feather)`
+  ${({ theme: { colors } }) => css`
+    font-size: ${RFValue(24)}px;
+    color: ${colors.whiteIsh};
+    margin-right: 12px;
+  `}
+`
+
+export const MonthSelect = styled.View`
+  width: 100%;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+`
+
+export const MonthText = styled.Text`
+  ${({ theme: { colors, fonts } }) => css`
+    font-size: ${RFValue(18)}px;
+    color: ${colors.whiteIsh};
+    font-family: ${fonts.bold};
+  `}
 `
