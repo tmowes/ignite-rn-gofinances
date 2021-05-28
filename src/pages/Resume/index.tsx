@@ -1,10 +1,6 @@
 /* eslint-disable array-callback-return */
 import React, { useCallback, useMemo, useState } from 'react'
-import {
-  ActivityIndicator,
-  Keyboard,
-  TouchableWithoutFeedback,
-} from 'react-native'
+import { ActivityIndicator, Keyboard, TouchableWithoutFeedback } from 'react-native'
 
 import { VictoryPie } from 'victory-native'
 import { useFocusEffect } from '@react-navigation/native'
@@ -17,15 +13,13 @@ import { ptBR } from 'date-fns/locale'
 import * as C from '../../components'
 import * as S from './styles'
 import { loadTransactions } from '../../libs/storage'
-import {
-  categories,
-  compareMonth,
-  compareYear,
-  formatCurrency,
-} from '../../utils'
+import { categories, compareMonth, compareYear, formatCurrency } from '../../utils'
 import { Category } from './types'
+import { useAuth } from '../../contexts'
 
 export const Resume = () => {
+  const { user } = useAuth()
+
   const [isLoading, setIsLoading] = useState(true)
   const [selectedDate, setSelectedDate] = useState(new Date())
   const tabHeight = useBottomTabBarHeight()
@@ -46,10 +40,8 @@ export const Resume = () => {
     [selectedDate]
   )
 
-  const loadAsyncStorage = async () => {
-    0
-
-    const storageTransactions = await loadTransactions()
+  const loadAsyncStorage = useCallback(async () => {
+    const storageTransactions = await loadTransactions(user.id)
     const expensesList = storageTransactions.filter(
       transaction =>
         transaction.type === 'EXPENSE' &&
@@ -61,8 +53,6 @@ export const Resume = () => {
       (acc, item) => acc + Number(item.amount),
       0
     )
-
-    console.log(expensesTotal)
 
     const totalByCategory: Category[] = []
 
@@ -88,13 +78,12 @@ export const Resume = () => {
 
     setCategoriesList(totalByCategory)
     setIsLoading(false)
-  }
+  }, [selectedDate, user.id])
 
   useFocusEffect(
     useCallback(() => {
       loadAsyncStorage()
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [selectedDate])
+    }, [loadAsyncStorage])
   )
 
   if (isLoading) {

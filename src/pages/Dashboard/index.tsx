@@ -5,78 +5,84 @@ import { useFocusEffect } from '@react-navigation/native'
 
 import * as C from '../../components'
 import { loadTransactions } from '../../libs/storage'
-import { formatCurrency, formatDate, formatDateLong } from '../../utils'
+import {
+  formatCurrency,
+  formatDate,
+  formatDateLong,
+  lastTransactionDate,
+} from '../../utils'
 import * as S from './styles'
 import { Transaction } from './types'
 import { initialHighlightData } from './initialState'
+import { useAuth } from '../../contexts'
 
 export const Dashboard = () => {
+  const { user, signOut } = useAuth()
   const [isLoading, setIsLoading] = useState(true)
   const [transactionsList, setTransactionsList] = useState<Transaction[]>([])
 
   const [highlightData, setHighlightData] = useState(initialHighlightData)
 
-  const loadAsyncStorage = async () => {
-    const storageTransactions = await loadTransactions()
-    let incomeSum = 0
-    let expenseSum = 0
-    const formattedTransactions: Transaction[] = storageTransactions.map(
-      transaction => {
-        if (transaction.type === 'INCOME') {
-          incomeSum += Number(transaction.amount)
-        } else {
-          expenseSum += Number(transaction.amount)
+  const loadAsyncStorage = useCallback(async () => {
+    try {
+      const storageTransactions = await loadTransactions(user.id)
+      let incomeSum = 0
+      let expenseSum = 0
+      const formattedTransactions: Transaction[] = storageTransactions.map(
+        transaction => {
+          if (transaction.type === 'INCOME') {
+            incomeSum += Number(transaction.amount)
+          } else {
+            expenseSum += Number(transaction.amount)
+          }
+          const amount = formatCurrency(Number(transaction.amount))
+          const created_at = formatDate(new Date(transaction.created_at))
+          return {
+            ...transaction,
+            amount,
+            created_at,
+          }
         }
-        const amount = formatCurrency(Number(transaction.amount))
-        const created_at = formatDate(new Date(transaction.created_at))
-        return {
-          ...transaction,
-          amount,
-          created_at,
-        }
+      )
+
+      const lastIncomeDate = lastTransactionDate(storageTransactions, 'INCOME')
+
+      const lastExpenseDate = lastTransactionDate(storageTransactions, 'EXPENSE')
+
+      const formattedHighlightData = {
+        incomes: {
+          total: formatCurrency(incomeSum),
+          lastTransaction:
+            lastIncomeDate === 0
+              ? 'Sem entradas cadastradas'
+              : `Última entrada dia ${formatDateLong(new Date(lastIncomeDate))}`,
+        },
+        expenses: {
+          total: formatCurrency(expenseSum),
+          lastTransaction:
+            lastExpenseDate === 0
+              ? 'Sem saidas cadastradas'
+              : `Última saída dia ${formatDateLong(new Date(lastExpenseDate))}`,
+        },
+        total: {
+          total: formatCurrency(incomeSum - expenseSum),
+          lastTransaction: `01 a ${formatDateLong(new Date())}`,
+        },
       }
-    )
 
-    const lastIncomeDate = Math.max(
-      ...storageTransactions
-        .filter(transaction => transaction.type === 'INCOME')
-        .map(transaction => new Date(transaction.created_at).getTime())
-    )
-
-    const lastExpenseDate = Math.max(
-      ...storageTransactions
-        .filter(transaction => transaction.type === 'INCOME')
-        .map(transaction => new Date(transaction.created_at).getTime())
-    )
-
-    const formattedHighlightData = {
-      incomes: {
-        total: formatCurrency(incomeSum),
-        lastTransaction: `Última entrada dia ${formatDateLong(
-          new Date(lastIncomeDate)
-        )}`,
-      },
-      expenses: {
-        total: formatCurrency(expenseSum),
-        lastTransaction: `Última saída dia ${formatDateLong(
-          new Date(lastExpenseDate)
-        )}`,
-      },
-      total: {
-        total: formatCurrency(incomeSum - expenseSum),
-        lastTransaction: `01 a ${formatDateLong(new Date())}`,
-      },
+      setHighlightData(formattedHighlightData)
+      setTransactionsList(formattedTransactions)
+      setIsLoading(false)
+    } catch (error) {
+      console.log(error)
+      setIsLoading(false)
     }
-
-    setHighlightData(formattedHighlightData)
-    setTransactionsList(formattedTransactions)
-    setIsLoading(false)
-  }
+  }, [user.id])
 
   useFocusEffect(
     useCallback(() => {
       loadAsyncStorage()
-    }, [])
+    }, [loadAsyncStorage])
   )
 
   if (isLoading) {
@@ -92,16 +98,16 @@ export const Dashboard = () => {
       <S.Header>
         <S.UserContainer>
           <S.UserInfo>
-            <S.Avatar source={{ uri: 'http://github.com/tmowes.png' }} />
+            <S.Avatar source={{ uri: user.photo }} />
             <S.Greetings>
               <S.Title>Olá,</S.Title>
-              <S.UserName>Julius</S.UserName>
+              <S.UserName>{user.name}</S.UserName>
             </S.Greetings>
             <C.IconButton
               style={{
                 marginLeft: 'auto',
               }}
-              onPress={() => true}
+              onPress={signOut}
               icon={<S.PowerIcon />}
             />
           </S.UserInfo>

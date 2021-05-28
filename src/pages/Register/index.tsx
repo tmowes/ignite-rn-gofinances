@@ -14,9 +14,11 @@ import { formSchema } from './formSchema'
 import { saveTransaction } from '../../libs/storage'
 import { TransactionProps } from '../../libs/storage/types'
 import { initialCategory, initialTransactionType } from './initialFormState'
+import { useAuth } from '../../contexts'
 
 export const Register = () => {
   const { navigate } = useNavigation()
+  const { user } = useAuth()
   const {
     control,
     reset,
@@ -50,7 +52,7 @@ export const Register = () => {
       updated_at: String(new Date()),
     }
     try {
-      await saveTransaction({ ...data })
+      await saveTransaction({ ...data }, user.id)
       setCategory(initialCategory)
       setTransactionType(initialTransactionType)
       reset()

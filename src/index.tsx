@@ -12,7 +12,8 @@ import {
 } from '@expo-google-fonts/poppins'
 
 import * as themes from './styles/themes'
-import { TabRoutes } from './routes/tab.routes'
+import { AppProvider, useAuth } from './contexts'
+import { AppRoutes } from './routes'
 
 const AppWrapper = styled.View`
   ${({ theme: { colors } }) => css`
@@ -22,28 +23,32 @@ const AppWrapper = styled.View`
 `
 
 export const AppSrc = () => {
+  const { storageLoading } = useAuth()
+
   const [fontsLoaded] = useFonts({
     Poppins_400Regular,
     Poppins_500Medium,
     Poppins_700Bold,
   })
 
-  if (!fontsLoaded) {
+  if (!fontsLoaded || storageLoading) {
     return <AppLoading />
   }
 
   return (
-    <ThemeProvider theme={themes.dark}>
-      <NavigationContainer>
-        <StatusBar
-          barStyle="light-content"
-          backgroundColor="transparent"
-          translucent
-        />
-        <AppWrapper>
-          <TabRoutes />
-        </AppWrapper>
-      </NavigationContainer>
-    </ThemeProvider>
+    <AppProvider>
+      <ThemeProvider theme={themes.dark}>
+        <NavigationContainer>
+          <StatusBar
+            barStyle="light-content"
+            backgroundColor="transparent"
+            translucent
+          />
+          <AppWrapper>
+            <AppRoutes />
+          </AppWrapper>
+        </NavigationContainer>
+      </ThemeProvider>
+    </AppProvider>
   )
 }
